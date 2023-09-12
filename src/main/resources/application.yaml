@@ -1,0 +1,21 @@
+db:
+  url: jdbc:postgresql://localhost:5432/clevertecdb
+  driver: org.postgresql.Driver
+  user: postgres
+  password: root
+
+  maxPoolSize: 20
+  maxStatements: 180
+
+init:
+  url: jdbc:postgresql://localhost:5432/postgres
+  driver: org.postgresql.Driver
+  user: postgres
+  password: root
+
+  database: src\main\resources\create-db.sql
+  tables: src\main\resources\schema-db.sql
+
+properties:
+  check-path: ./check/
+  percent: 1

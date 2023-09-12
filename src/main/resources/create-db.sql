@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS clevertecdb;
+CREATE DATABASE clevertecdb;
