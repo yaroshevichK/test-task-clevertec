@@ -24,12 +24,14 @@ public class IncomePercent extends Thread {
     @Override
     public void run() {
         while (true) {
-            try {
-                incomePercent();
-                wait(CHECK_PERCENT_TIME);
-            } catch (InterruptedException e) {
-                //add log
-                break;
+            synchronized (this) {
+                try {
+                    incomePercent();
+                    wait(CHECK_PERCENT_TIME);
+                } catch (InterruptedException e) {
+                    //add log
+                    break;
+                }
             }
         }
     }

@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS account
     date_income_percent date
 );
 
-CREATE TABLE IF NOT EXISTS transactions
+CREATE TABLE IF NOT EXISTS transaction
 (
     id               SERIAL PRIMARY KEY NOT NULL,
     date_transaction timestamp,

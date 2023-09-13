@@ -26,8 +26,10 @@ import static task.clevertec.repository.datasource.Queries.ACCOUNT_TRANSFER_QUER
 import static task.clevertec.repository.datasource.Queries.ACC_CURRENCY_ID;
 import static task.clevertec.repository.datasource.Queries.ACC_CURRENCY_NAME;
 import static task.clevertec.repository.datasource.Queries.ACC_DATE_IN_PER;
+import static task.clevertec.repository.datasource.Queries.ACC_DATE_OPEN;
 import static task.clevertec.repository.datasource.Queries.BANK_BANK_ID;
 import static task.clevertec.repository.datasource.Queries.BANK_BANK_NAME;
+import static task.clevertec.repository.datasource.Queries.CURRENCY_NAME;
 import static task.clevertec.repository.datasource.Queries.FIRST_INDEX;
 import static task.clevertec.repository.datasource.Queries.USER_ACCOUNT_QUERY;
 
@@ -61,6 +63,10 @@ public class DaoAccount extends Dao<Account> implements IDaoAccount {
                             .ofNullable(dateInPer)
                             .map(Date::toLocalDate)
                             .orElse(null);
+                    LocalDate dateOpen = Optional
+                            .ofNullable(resultSet.getDate(ACC_DATE_OPEN))
+                            .map(Date::toLocalDate)
+                            .orElse(null);
                     Currency currency = Currency.builder()
                             .id(resultSet.getInt(ACC_CURRENCY_ID))
                             .name(resultSet.getString(ACC_CURRENCY_NAME))
@@ -73,6 +79,8 @@ public class DaoAccount extends Dao<Account> implements IDaoAccount {
                             .user(user)
                             .bank(user.getCurrentBank())
                             .dateIncomePercent(date)
+                            .dateOpen(dateOpen)
+                            .balance(resultSet.getDouble(ACCOUNT_BALANCE))
                             .build()
                     );
                 }
@@ -171,7 +179,7 @@ public class DaoAccount extends Dao<Account> implements IDaoAccount {
                 if (resultSet != null && resultSet.next()) {
                     Currency currency = Currency.builder()
                             .id(resultSet.getInt(ACC_CURRENCY_ID))
-                            .name(resultSet.getString(ACC_CURRENCY_NAME))
+                            .name(resultSet.getString(CURRENCY_NAME))
                             .build();
                     return Account
                             .builder()

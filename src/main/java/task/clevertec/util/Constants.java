@@ -16,6 +16,7 @@ public class Constants {
     public static final String URL = "url";
     public static final String USER = "user";
     public static final String PASSWORD = "password";
+    public static final String NAME_DB = "nameDb";
     public static final String POOL_SIZE = "maxPoolSize";
     public static final String POOL_STATEMENTS = "maxStatements";
     public static final String PROP_PERCENT = "percent";
@@ -36,13 +37,17 @@ public class Constants {
     public static final int CHECK_PERCENT_TIME = 30000;
     public static final String EMPTY_STRING = "";
     public static final String ZERO_STRING = "0";
+    public static final int FIRST_DAY = 1;
 
 
     //menu
     public static final String STR_MENU = "Меню:";
     public static final String STR_SIGN_IN = "1. Авторизация";
     public static final String STR_SIGN_OUT = "0. Выход из приложения";
+    public static final String STR_STATEMENT = "%d. Выписка из банка";
     public static final String ACTION_MENU = "%d. %s\n";
+    public static final String STR_MENU_CANCEL = "0. Отмена";
+    public static final String STR_CANCEL = "Отмена действия";
 
     //msg
     public static final String MSG_WRONG_INIT = "Ошибка инициализации данных";
@@ -60,6 +65,8 @@ public class Constants {
     public static final String MSG_WRONG_CURRENCY = "Список валют пуст";
     public static final String MSG_WRONG_LIST_BANK = "Список банков пуст";
     public static final String MSG_WRONG_ACC = "Указанный счет клиента отсутствует";
+    public static final String MSG_WRONG_MONTH = "Не верно введен месяц";
+    public static final String MSG_WRONG_YEAR = "Не верно введен год";
     public static final String MSG_WRONG_RES = "Результат не получен";
     public static final String MSG_WRONG = "Неизвестная ошибка";
 
@@ -72,6 +79,9 @@ public class Constants {
     public static final String INPUT_AMOUNT = "Введите сумму (0 - для отмены):";
     public static final String INPUT_BANK = "Выберите банк:";
     public static final String INPUT_CURRENCY = "Введите номер валюты (0 - для отмены):";
+    public static final String INPUT_MONTH = "Введите номер месяца (0 - для отмены):";
+    public static final String INPUT_YEAR = "Введите 4 цифры года не более текущего (0 - для отмены):";
+    public static final String INPUT_DATE_OPEN = "Дата открытия счета: ";
 
     //database
     public static final String DB_TRANSACTION = "transaction";

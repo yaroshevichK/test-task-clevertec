@@ -4,10 +4,11 @@ import task.clevertec.command.Command;
 import task.clevertec.command.CommandFactory;
 import task.clevertec.command.impl.IncomePercent;
 import task.clevertec.command.impl.SignIn;
-import task.clevertec.util.Converter;
+import task.clevertec.command.impl.Statement;
 import task.clevertec.entity.TypeTransaction;
 import task.clevertec.entity.User;
 import task.clevertec.repository.datasource.ConnectionDB;
+import task.clevertec.util.Converter;
 
 import static task.clevertec.util.Constants.ACTION_MENU;
 import static task.clevertec.util.Constants.CONSOLE;
@@ -18,6 +19,7 @@ import static task.clevertec.util.Constants.MSG_WRONG_NUMBER_MENU;
 import static task.clevertec.util.Constants.OUT;
 import static task.clevertec.util.Constants.STR_MENU;
 import static task.clevertec.util.Constants.STR_SIGN_OUT;
+import static task.clevertec.util.Constants.STR_STATEMENT;
 
 public class App {
     public static void main(String[] args) {
@@ -53,10 +55,13 @@ public class App {
         for (TypeTransaction type : TypeTransaction.values()) {
             OUT.printf(ACTION_MENU, type.ordinal() + 1, type.getName());
         }
+        int count = TypeTransaction.values().length;
+        OUT.println(String.format(STR_STATEMENT, count + 1));
         OUT.println(STR_SIGN_OUT);
     }
 
     private static void runningApp(User authUser) {
+        int count = TypeTransaction.values().length;
         do {
             printMenu();
             OUT.print(INPUT_NUMBER_MENU);
@@ -70,6 +75,13 @@ public class App {
             if (numMenu == 0) {
                 OUT.println(MSG_SIGN_OUT);
                 System.exit(0);
+            }
+
+            if (numMenu == count + 1) {
+                Command command = new Statement(authUser);
+                String result = command.execute();
+                OUT.println(result);
+                continue;
             }
 
             Command command = CommandFactory.getCommand(numMenu, authUser);

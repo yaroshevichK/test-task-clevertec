@@ -242,7 +242,7 @@ public class TransferMoneyOther implements Command {
             } else if (bankId == 0) {
                 return EMPTY_STRING;
             }
-            accountTransfer.setBank(banks.get(currencyId - 1));
+            accountTransfer.setBank(banks.get(bankId - 1));
         }
 
         String note = getDescription();

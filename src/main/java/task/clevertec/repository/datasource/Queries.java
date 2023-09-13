@@ -3,7 +3,7 @@ package task.clevertec.repository.datasource;
 import task.clevertec.util.Configuration;
 
 import static task.clevertec.util.Constants.DB;
-import static task.clevertec.util.Constants.URL;
+import static task.clevertec.util.Constants.NAME_DB;
 
 public class Queries {
     public static final int FIRST_INDEX = 1;
@@ -18,6 +18,7 @@ public class Queries {
     public static final String BANK_BANK_NAME = "bank_name";
 
     public static final String ACC_DATE_IN_PER = "date_income_percent";
+    public static final String ACC_DATE_OPEN = "date_open";
     public static final String ACC_CURRENCY_ID = "currency_id";
     public static final String ACC_CURRENCY_NAME = "currency_name";
     public static final String ACCOUNT_ID = "id";
@@ -27,6 +28,7 @@ public class Queries {
     public static final String BANK_NAME = "name";
     public static final String CURRENCY_ID = "id";
     public static final String CURRENCY_NAME = "name";
+    public static final String TRANSACTION_ID = "id";
     public static final String TRANSACTION_DATE = "date_transaction";
     public static final String TRANSACTION_TYPE = "type_transaction";
     public static final String TRANSACTION_ACC = "account_id";
@@ -37,7 +39,7 @@ public class Queries {
     //queries
     public static final String GET_CURRENT_DB = "SELECT * FROM " +
             "pg_database where datname='" +
-            Configuration.getProperty(DB, URL) +
+            Configuration.getProperty(DB, NAME_DB) +
             "'";
 
     public static final String INSERT_QUERY =
@@ -56,7 +58,8 @@ public class Queries {
 
     public static final String USER_ACCOUNT_QUERY = "SELECT " +
             "account.id, account.number, account.date_income_percent, " +
-            "account.currency_id, currency.name as currency_name " +
+            "account.currency_id, currency.name as currency_name, " +
+            "account.date_open, account.balance " +
             "FROM account " +
             "LEFT JOIN currency on currency.id = account.currency_id " +
             "WHERE account.bank_id = ? AND account.user_id = ? ORDER BY account.id";
@@ -88,4 +91,8 @@ public class Queries {
 
     public static final String UPD_ACC_BALANCE_QUERY =
             "UPDATE account SET balance = balance + ? WHERE id = ?";
+
+    public static final String TRANSACTIONS_QUERY = "SELECT * FROM transaction " +
+            "WHERE account_id = ? AND date_transaction between ? AND ? " +
+            "ORDER BY date_transaction";
 }

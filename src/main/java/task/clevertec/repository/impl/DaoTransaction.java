@@ -12,19 +12,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static task.clevertec.repository.datasource.Queries.ACCOUNT_NUMBER;
 import static task.clevertec.repository.datasource.Queries.ACC_CURRENCY_ID;
 import static task.clevertec.repository.datasource.Queries.BANK_BANK_ID;
 import static task.clevertec.repository.datasource.Queries.FIRST_INDEX;
 import static task.clevertec.repository.datasource.Queries.SPACE;
+import static task.clevertec.repository.datasource.Queries.TRANSACTIONS_QUERY;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_ACC;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_ACC_TRANSFER;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_AMOUNT;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_DATE;
+import static task.clevertec.repository.datasource.Queries.TRANSACTION_ID;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_NOTE;
 import static task.clevertec.repository.datasource.Queries.TRANSACTION_TYPE;
 import static task.clevertec.repository.datasource.Queries.UPD_ACC_BALANCE_QUERY;
@@ -71,7 +77,7 @@ public class DaoTransaction extends Dao<TypeTransaction> implements IDaoTransact
         HashMap<String, Object> values = new HashMap<>();
 
         values.put(TRANSACTION_DATE, transaction.getDateTransaction());
-        values.put(TRANSACTION_TYPE, transaction.getTypeTransaction());
+        values.put(TRANSACTION_TYPE, TypeTransaction.INCOME);
         values.put(TRANSACTION_ACC, transaction.getAccountTransfer().getId());
         values.put(TRANSACTION_AMOUNT, transaction.getAmount());
         String username = transaction.getAccount().getUser().getName();
@@ -290,5 +296,45 @@ public class DaoTransaction extends Dao<TypeTransaction> implements IDaoTransact
         }
 
         return transaction;
+    }
+
+    @Override
+    public List<Transaction> generateStatement(Integer accountId, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        List<Transaction> transactions = new ArrayList<>();
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection
+                        .prepareStatement(TRANSACTIONS_QUERY)
+        ) {
+            if (statement == null) {
+                return transactions;
+            }
+
+            Connector.setValue(FIRST_INDEX, accountId, statement);
+            Connector.setValue(FIRST_INDEX + 1, dateFrom, statement);
+            Connector.setValue(FIRST_INDEX + 2, dateTo, statement);
+            ResultSet resultSet = Connector.execute(statement);
+
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    LocalDateTime date = Optional
+                            .ofNullable(resultSet.getTimestamp(TRANSACTION_DATE))
+                            .map(Timestamp::toLocalDateTime)
+                            .orElse(null);
+                    TypeTransaction typeTransaction = TypeTransaction.valueOf(resultSet.getString(TRANSACTION_TYPE));
+                    Transaction transaction = Transaction.builder()
+                            .id(resultSet.getInt(TRANSACTION_ID))
+                            .dateTransaction(date)
+                            .amount(resultSet.getDouble(TRANSACTION_AMOUNT))
+                            .note(resultSet.getString(TRANSACTION_NOTE))
+                            .typeTransaction(typeTransaction)
+                            .build();
+                    transactions.add(transaction);
+                }
+            }
+        } catch (SQLException e) {
+            //add logger
+        }
+        return transactions;
     }
 }
