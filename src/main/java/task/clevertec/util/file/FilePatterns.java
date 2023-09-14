@@ -3,7 +3,9 @@ package task.clevertec.util.file;
 import task.clevertec.util.Configuration;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static task.clevertec.util.Constants.PROPERTIES;
 
@@ -27,27 +29,31 @@ public class FilePatterns {
     public static final String CHECK = "Чек:";
     public static final String AMOUNT = "Сумма:";
     public static final String STATEMENT = "Выписка";
-    public static final String USER="Клиент";
-    public static final String ACCOUNT="Счет";
-    public static final String CURRENCY="Валюта";
-    public static final String DATE_OPEN="Дата открытия";
-    public static final String PERIOD="Период";
-    public static final String DATE_STMT="Дата и время формирования";
-    public static final String BALANCE="Остаток";
-    public static final String HEADER_DATE="Дата";
-    public static final String HEADER_NOTE="Примечание";
-    public static final String HEADER_AMOUNT="Сумма";
+    public static final String USER = "Клиент";
+    public static final String ACCOUNT = "Счет";
+    public static final String CURRENCY = "Валюта";
+    public static final String DATE_OPEN = "Дата открытия";
+    public static final String PERIOD = "Период";
+    public static final String DATE_STMT = "Дата и время формирования";
+    public static final String BALANCE = "Остаток";
+    public static final String HEADER_DATE = "Дата";
+    public static final String HEADER_NOTE = "Примечание";
+    public static final String HEADER_AMOUNT = "Сумма";
 
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     public static final DateTimeFormatter FULL_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
     public static final DateTimeFormatter DATE_STMT_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     public static final DecimalFormat SUM_FORMAT = new DecimalFormat("#.00#");
-    public static final DecimalFormat BALANCE_FORMAT = new DecimalFormat("#.00");
-    public static final String PERIOD_STR ="%s - %s";
+    public static final DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,##0.00",
+            DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+    public static final String PERIOD_STR = "%s - %s";
     public static final String PATH_CHECK = Configuration.getProperty(PROPERTIES, "check-path");
     public static final String PATH_STMT = Configuration.getProperty(PROPERTIES, "statement-path");
     public static final String PATH_STMT_MONEY = Configuration.getProperty(PROPERTIES, "statement-money-path");
     public static final String TXT_FILE = ".txt";
-    public static final String FILE_STMT = "statement.txt";
+    public static final String FILE_STMT_TXT = "statement.txt";
+    public static final String FILE_STMT_PDF = "statement.pdf";
+    public static final String FONT = "src/main/resources/fonts/FreeSans.ttf";
+    public static final String CP1251 = "Cp1251";
 }

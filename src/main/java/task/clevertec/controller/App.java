@@ -10,6 +10,8 @@ import task.clevertec.entity.User;
 import task.clevertec.repository.datasource.ConnectionDB;
 import task.clevertec.util.Converter;
 
+import java.io.IOException;
+
 import static task.clevertec.util.Constants.ACTION_MENU;
 import static task.clevertec.util.Constants.CONSOLE;
 import static task.clevertec.util.Constants.INPUT_NUMBER_MENU;
@@ -22,6 +24,8 @@ import static task.clevertec.util.Constants.STR_SIGN_OUT;
 import static task.clevertec.util.Constants.STR_STATEMENT;
 
 public class App {
+    public static final String FONT = "src/main/resources/fonts/FreeSans.ttf";
+
     public static void main(String[] args) {
         boolean initResult = ConnectionDB.getInstance().initDatabase();
         if (!initResult) {

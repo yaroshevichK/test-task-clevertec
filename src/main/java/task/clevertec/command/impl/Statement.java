@@ -47,6 +47,13 @@ public class Statement implements Command {
         OUT.println(STR_MENU_CANCEL);
     }
 
+    private static void printFormat() {
+        for (FileFormat format : FileFormat.values()) {
+            OUT.printf(ACTION_MENU, format.ordinal() + 1, format);
+        }
+        OUT.println(STR_MENU_CANCEL);
+    }
+
     private void printAccounts(List<Account> accounts) {
         for (int i = 0; i < accounts.size(); i++) {
             OUT.printf(ACTION_MENU, i + 1, accounts.get(i).getNumber());
@@ -108,6 +115,34 @@ public class Statement implements Command {
         while (true);
 
         return period;
+    }
+
+    private Integer chooseFormat() {
+        Integer formatNumber;
+        do {
+            printFormat();
+
+            OUT.print(INPUT_NUMBER_MENU);
+            OUT.flush();
+            formatNumber = Converter.strToInt(CONSOLE.next());
+
+            if (formatNumber == null) {
+                OUT.println(MSG_WRONG_NUMBER_MENU);
+                continue;
+            }
+            if (formatNumber == 0) {
+                break;
+            }
+
+            if (formatNumber < 0 || formatNumber > Period.values().length) {
+                OUT.println(MSG_WRONG_NUMBER_MENU);
+            } else {
+                break;
+            }
+        }
+        while (true);
+
+        return formatNumber;
     }
 
     private Integer chooseMonth(LocalDate dateOpen) {
@@ -225,6 +260,17 @@ public class Statement implements Command {
             dateTo = dateFrom.withDayOfYear(dateFrom.lengthOfYear());
         }
 
-        return transactionService.generateStatement(account, dateFrom, dateTo, FileFormat.TXT);
+        Integer formatNumber = chooseFormat();
+        if (formatNumber == null) {
+            return MSG_WRONG_NUMBER_MENU;
+        } else if (formatNumber == 0) {
+            return EMPTY_STRING;
+        }
+        FileFormat fileFormat = FileFormat.values()[formatNumber - 1];
+        if (fileFormat == null) {
+            return MSG_WRONG_NUMBER_MENU;
+        }
+
+        return transactionService.generateStatement(account, dateFrom, dateTo, fileFormat);
     }
 }

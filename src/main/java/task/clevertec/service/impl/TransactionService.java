@@ -99,7 +99,16 @@ public class TransactionService implements ITransactionService {
                 .generateStatement(account.getId(), dateTimeFrom, dateTimeTo);
 
         if (transactions != null) {
-            FileUtils.saveStatement(account,dateTimeFrom,dateTimeTo,transactions);
+            switch (format) {
+                case TXT:
+                    FileUtils.saveStatementTxt(account, dateTimeFrom, dateTimeTo, transactions);
+                    break;
+                case PDF:
+                    FileUtils.saveStatementPdf(account, dateTimeFrom, dateTimeTo, transactions);
+                    break;
+                default:
+                    return MSG_STATUS_WRONG;
+            }
             return MSG_STATUS_OK;
         }
         return MSG_STATUS_WRONG;
