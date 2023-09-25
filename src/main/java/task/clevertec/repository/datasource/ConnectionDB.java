@@ -3,6 +3,7 @@ package task.clevertec.repository.datasource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import task.clevertec.util.Configuration;
 
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 
 import static task.clevertec.repository.datasource.Queries.GET_CURRENT_DB;
 import static task.clevertec.util.Constants.DB;
+import static task.clevertec.util.Constants.DRIVER;
 import static task.clevertec.util.Constants.INIT;
 import static task.clevertec.util.Constants.MSG_WRONG_CONN;
 import static task.clevertec.util.Constants.MSG_WRONG_INIT;
@@ -34,12 +36,17 @@ public class ConnectionDB {
     private ConnectionDB() {
         poolConn = new ComboPooledDataSource();
 
-        poolConn.setJdbcUrl(getProperty(DB, URL));
-        poolConn.setUser(getProperty(DB, USER));
-        poolConn.setPassword(getProperty(DB, PASSWORD));
+        try {
+            poolConn.setDriverClass(getProperty(DB, DRIVER));
+            poolConn.setJdbcUrl(getProperty(DB, URL));
+            poolConn.setUser(getProperty(DB, USER));
+            poolConn.setPassword(getProperty(DB, PASSWORD));
 
-        poolConn.setMaxPoolSize(getProperty(DB, POOL_SIZE));
-        poolConn.setMaxStatements(getProperty(DB, POOL_STATEMENTS));
+            poolConn.setMaxPoolSize(getProperty(DB, POOL_SIZE));
+            poolConn.setMaxStatements(getProperty(DB, POOL_STATEMENTS));
+        } catch (PropertyVetoException e) {
+            //add log
+        }
     }
 
     private static <T> T getProperty(String root, String key) {

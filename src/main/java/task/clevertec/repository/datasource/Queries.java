@@ -10,6 +10,8 @@ public class Queries {
     public static final String COMMA = ",";
     public static final String CHAR_VALUE = "?";
     public static final String SPACE = " ";
+    public static final String DELIMITER_UPD = " = ?,";
+    public static final String DELIM_LAST_UPD = " = ?";
 
     //fields
     public static final String USER_ID = "id";
@@ -44,6 +46,11 @@ public class Queries {
 
     public static final String INSERT_QUERY =
             "INSERT INTO %s (%s) VALUES (%s)";
+    public static final String GET_ALL_QUERY = "SELECT * FROM %s";
+    public static final String GET_BY_ID_QUERY =
+            "SELECT * FROM %s WHERE id = ?";
+    public static final String UPDATE_QUERY = "UPDATE %s SET %s WHERE %s = ?";
+    public static final String DELETE_QUERY = "DELETE FROM %s WHERE %s = ?";
 
     public static final String USER_BY_NAME_QUERY =
             "SELECT users.id, users.name, " +
@@ -82,6 +89,7 @@ public class Queries {
 
     public static final String BANK_WITHOUT_CURR_QUERY =
             "SELECT * FROM bank WHERE id <> ?";
+
 
     public static final String CURRENCIES_QUERY = "SELECT * FROM currency";
 

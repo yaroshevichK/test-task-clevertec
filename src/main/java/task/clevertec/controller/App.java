@@ -24,8 +24,6 @@ import static task.clevertec.util.Constants.STR_SIGN_OUT;
 import static task.clevertec.util.Constants.STR_STATEMENT;
 
 public class App {
-    public static final String FONT = "src/main/resources/fonts/FreeSans.ttf";
-
     public static void main(String[] args) {
         boolean initResult = ConnectionDB.getInstance().initDatabase();
         if (!initResult) {

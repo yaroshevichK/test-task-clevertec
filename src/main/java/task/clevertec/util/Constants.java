@@ -13,6 +13,7 @@ public class Constants {
     public static final String PROPERTIES = "properties";
     public static final String PROP_DB = "database";
     public static final String PROP_TABLES = "tables";
+    public static final String DRIVER = "driver";
     public static final String URL = "url";
     public static final String USER = "user";
     public static final String PASSWORD = "password";
@@ -86,4 +87,14 @@ public class Constants {
     //database
     public static final String DB_TRANSACTION = "transaction";
     public static final String DB_ACCOUNT = "account";
+    public static final String DB_BANK = "bank";
+    public static final String DB_CURRENCY = "currency";
+
+    //servlets
+    public static final String BANKS = "banks";
+    public static final String PATTERN_BANK_ID = "(/banks/)(\\d+)";
+    public static final String SLASH = "/";
+
+    public static final String CURRENCIES = "currencies";
+    public static final String PATTERN_CURR_ID = "(/currencies/)(\\d+)";
 }
