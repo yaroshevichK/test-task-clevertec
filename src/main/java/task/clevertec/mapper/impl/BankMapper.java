@@ -6,18 +6,18 @@ import task.clevertec.mapper.Mapper;
 
 public class BankMapper implements Mapper<Bank, BankResponse> {
     @Override
-    public Bank ResponseToEntity(BankResponse response) {
+    public Bank ResponseToEntity(BankResponse bankResponse) {
         return Bank.builder()
-                .id(response.getId())
-                .name(response.getName())
+                .id(bankResponse.getId())
+                .name(bankResponse.getName())
                 .build();
     }
 
     @Override
-    public BankResponse entityToResponse(Bank entity) {
+    public BankResponse entityToResponse(Bank bank) {
         return BankResponse.builder()
-                .id(entity.getId())
-                .name(entity.getName())
+                .id(bank.getId())
+                .name(bank.getName())
                 .build();
     }
 }

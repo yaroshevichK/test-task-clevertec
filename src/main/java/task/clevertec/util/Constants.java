@@ -89,6 +89,7 @@ public class Constants {
     public static final String DB_ACCOUNT = "account";
     public static final String DB_BANK = "bank";
     public static final String DB_CURRENCY = "currency";
+    public static final String DB_USERS = "users";
 
     //servlets
     public static final String BANKS = "banks";
@@ -97,4 +98,11 @@ public class Constants {
 
     public static final String CURRENCIES = "currencies";
     public static final String PATTERN_CURR_ID = "(/currencies/)(\\d+)";
+
+    public static final String USERS = "users";
+    public static final String PATTERN_USER_ID = "(/users/)(\\d+)";
+
+    public static final String ACCOUNTS = "accounts";
+    public static final String PATTERN_ACCOUNT_ID = "(/accounts/)(\\d+)";
+
 }

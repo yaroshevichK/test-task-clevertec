@@ -16,6 +16,7 @@ public class Queries {
     //fields
     public static final String USER_ID = "id";
     public static final String USER_NAME = "name";
+    public static final String USER_CURRENT_BANK = "current_bank";
     public static final String BANK_BANK_ID = "bank_id";
     public static final String BANK_BANK_NAME = "bank_name";
 
@@ -30,6 +31,7 @@ public class Queries {
     public static final String BANK_NAME = "name";
     public static final String CURRENCY_ID = "id";
     public static final String CURRENCY_NAME = "name";
+    public static final String ACCOUNT_USER_ID = "user_id";
     public static final String TRANSACTION_ID = "id";
     public static final String TRANSACTION_DATE = "date_transaction";
     public static final String TRANSACTION_TYPE = "type_transaction";
@@ -37,6 +39,8 @@ public class Queries {
     public static final String TRANSACTION_AMOUNT = "amount";
     public static final String TRANSACTION_NOTE = "note";
     public static final String TRANSACTION_ACC_TRANSFER = "account_transfer";
+    public static final String USER_BANK_ID = "user_bank_id";
+    public static final String USER_BANK_NAME = "user_bank_name";
 
     //queries
     public static final String GET_CURRENT_DB = "SELECT * FROM " +
@@ -51,6 +55,87 @@ public class Queries {
             "SELECT * FROM %s WHERE id = ?";
     public static final String UPDATE_QUERY = "UPDATE %s SET %s WHERE %s = ?";
     public static final String DELETE_QUERY = "DELETE FROM %s WHERE %s = ?";
+
+    public static final String GET_ALL_USERS =
+            "SELECT users.id, users.name, " +
+                    "bank.id AS bank_id, bank.name AS bank_name " +
+                    "FROM users " +
+                    "LEFT JOIN bank ON users.current_bank = bank.id ";
+
+    public static final String GET_USER_BY_ID =
+            "SELECT users.id, users.name, " +
+                    "bank.id AS bank_id, bank.name AS bank_name " +
+                    "FROM users " +
+                    "LEFT JOIN bank ON users.current_bank = bank.id " +
+                    "WHERE users.id = ?";
+
+    public static final String GET_ALL_ACCOUNTS = "SELECT account_data.id, " +
+            "       account_data.number, " +
+            "       account_data.date_income_percent, " +
+            "       account_data.currency_id, " +
+            "       account_data.currency_name, " +
+            "       account_data.bank_id, " +
+            "       account_data.bank_name, " +
+            "       account_data.user_id, " +
+            "       users_data.name, " +
+            "       users_data.bank_id   as user_bank_id, " +
+            "       users_data.bank_name as user_bank_name, " +
+            "       account_data.date_open, " +
+            "       account_data.balance " +
+            "FROM (SELECT account.id, " +
+            "             account.number, " +
+            "             account.date_income_percent, " +
+            "             account.currency_id, " +
+            "             currency.name as currency_name, " +
+            "             account.bank_id, " +
+            "             bank.name     as bank_name, " +
+            "             account.user_id, " +
+            "             account.date_open, " +
+            "             account.balance " +
+            "      FROM account " +
+            "               LEFT JOIN currency on currency.id = account.currency_id " +
+            "               LEFT JOIN bank on bank.id = account.bank_id) account_data " +
+            "         LEFT JOIN " +
+            "     (SELECT users.id, users.name, bank.id AS bank_id, bank.name AS bank_name " +
+            "      FROM users " +
+            "               LEFT JOIN bank ON users.current_bank = bank.id) users_data " +
+            "     ON account_data.user_id = users_data.id " +
+            "ORDER BY account_data.id";
+
+
+    public static final String GET_ACCOUNT_BY_ID = "SELECT account_data.id, " +
+            "       account_data.number, " +
+            "       account_data.date_income_percent, " +
+            "       account_data.currency_id, " +
+            "       account_data.currency_name, " +
+            "       account_data.bank_id, " +
+            "       account_data.bank_name, " +
+            "       account_data.user_id, " +
+            "       users_data.name, " +
+            "       users_data.bank_id   as user_bank_id, " +
+            "       users_data.bank_name as user_bank_name, " +
+            "       account_data.date_open, " +
+            "       account_data.balance " +
+            "FROM (SELECT account.id, " +
+            "             account.number, " +
+            "             account.date_income_percent, " +
+            "             account.currency_id, " +
+            "             currency.name as currency_name, " +
+            "             account.bank_id, " +
+            "             bank.name     as bank_name, " +
+            "             account.user_id, " +
+            "             account.date_open, " +
+            "             account.balance " +
+            "      FROM account " +
+            "               LEFT JOIN currency on currency.id = account.currency_id " +
+            "               LEFT JOIN bank on bank.id = account.bank_id) account_data " +
+            "         LEFT JOIN " +
+            "     (SELECT users.id, users.name, bank.id AS bank_id, bank.name AS bank_name " +
+            "      FROM users " +
+            "               LEFT JOIN bank ON users.current_bank = bank.id) users_data " +
+            "     ON account_data.user_id = users_data.id " +
+            "WHERE account_data.id = ?";
+
 
     public static final String USER_BY_NAME_QUERY =
             "SELECT users.id, users.name, " +
@@ -89,9 +174,6 @@ public class Queries {
 
     public static final String BANK_WITHOUT_CURR_QUERY =
             "SELECT * FROM bank WHERE id <> ?";
-
-
-    public static final String CURRENCIES_QUERY = "SELECT * FROM currency";
 
     public static final String UPD_ACC_DATE_BALANCE_QUERY =
             "UPDATE account SET income_percent = ?, " +

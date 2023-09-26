@@ -3,7 +3,6 @@ package task.clevertec.repository.impl;
 import task.clevertec.entity.Currency;
 import task.clevertec.repository.IDaoCurrency;
 import task.clevertec.repository.datasource.Connector;
-import task.clevertec.repository.datasource.DataQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import static task.clevertec.repository.datasource.Queries.CURRENCY_ID;
 import static task.clevertec.repository.datasource.Queries.CURRENCY_NAME;
-import static task.clevertec.repository.datasource.Queries.DELETE_QUERY;
 import static task.clevertec.repository.datasource.Queries.FIRST_INDEX;
 import static task.clevertec.repository.datasource.Queries.GET_ALL_QUERY;
 import static task.clevertec.repository.datasource.Queries.GET_BY_ID_QUERY;
@@ -91,95 +89,22 @@ public class DaoCurrency extends Dao<Currency> implements IDaoCurrency {
 
     @Override
     public boolean saveCurrency(Currency currency) {
-        HashMap<String, Object> values = fillCurrencyValues(currency);
-        List<Object> queryValue = values.values().stream().toList();
+        HashMap<String, Object> fields = fillCurrencyValues(currency);
+        List<Object> values = fields.values().stream().toList();
 
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-
-        try {
-            connection.setAutoCommit(false);
-
-            String query = DataQuery.getInsertQuery(values, DB_CURRENCY);
-            statement = Connector.getStatementInsert(query, connection);
-            Connector.setValues(queryValue, statement);
-            statement.executeUpdate();
-
-            Integer pKey = null;
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet != null && resultSet.next()) {
-                pKey = resultSet.getInt(FIRST_INDEX);
-            }
-
-            connection.commit();
-            return pKey != null;
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //add logger
-            }
-        } finally {
-            Connector.closeStatement(statement);
-            Connector.closeConnection(connection);
-        }
-
-        return false;
+        return save(DB_CURRENCY, fields, values);
     }
 
     @Override
     public boolean updateCurrency(Currency currency) {
-        HashMap<String, Object> values = fillCurrencyValues(currency);
-        List<Object> queryValue = values.values().stream().toList();
+        HashMap<String, Object> fields = fillCurrencyValues(currency);
+        List<Object> values = fields.values().stream().toList();
 
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-
-        try {
-            connection.setAutoCommit(false);
-
-            String query = DataQuery.getUpdateQuery(values, DB_CURRENCY);
-            statement = Connector.getStatement(query, connection);
-            Connector.setValues(queryValue, statement);
-            Connector.setValue(queryValue.size() + 1, currency.getId(), statement);
-            statement.executeUpdate();
-
-            connection.commit();
-            return true;
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //add logger
-            }
-        } finally {
-            Connector.closeStatement(statement);
-            Connector.closeConnection(connection);
-        }
-
-        return false;
+        return update(DB_CURRENCY, currency.getId(), fields, values);
     }
 
     @Override
     public boolean deleteCurrencyById(Integer id) {
-        String query = String.format(DELETE_QUERY, DB_CURRENCY, CURRENCY_ID);
-        try (
-                Connection connection = getConnection();
-                PreparedStatement statement = connection
-                        .prepareStatement(query)
-        ) {
-            if (statement == null) {
-                return false;
-            }
-
-            Connector.setValue(FIRST_INDEX, id, statement);
-            Connector.execute(statement);
-
-            return true;
-        } catch (SQLException e) {
-            //add logger
-        }
-
-        return false;
+        return deleteById(DB_CURRENCY, CURRENCY_ID, id);
     }
 }

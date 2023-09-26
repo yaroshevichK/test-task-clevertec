@@ -6,18 +6,18 @@ import task.clevertec.mapper.Mapper;
 
 public class CurrencyMapper implements Mapper<Currency, CurrencyResponse> {
     @Override
-    public Currency ResponseToEntity(CurrencyResponse response) {
+    public Currency ResponseToEntity(CurrencyResponse currencyResponse) {
         return Currency.builder()
-                .id(response.getId())
-                .name(response.getName())
+                .id(currencyResponse.getId())
+                .name(currencyResponse.getName())
                 .build();
     }
 
     @Override
-    public CurrencyResponse entityToResponse(Currency entity) {
+    public CurrencyResponse entityToResponse(Currency currency) {
         return CurrencyResponse.builder()
-                .id(entity.getId())
-                .name(entity.getName())
+                .id(currency.getId())
+                .name(currency.getName())
                 .build();
     }
 }

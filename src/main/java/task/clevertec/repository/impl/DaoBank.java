@@ -3,7 +3,6 @@ package task.clevertec.repository.impl;
 import task.clevertec.entity.Bank;
 import task.clevertec.repository.IDaoBank;
 import task.clevertec.repository.datasource.Connector;
-import task.clevertec.repository.datasource.DataQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +15,6 @@ import java.util.List;
 import static task.clevertec.repository.datasource.Queries.BANK_ID;
 import static task.clevertec.repository.datasource.Queries.BANK_NAME;
 import static task.clevertec.repository.datasource.Queries.BANK_WITHOUT_CURR_QUERY;
-import static task.clevertec.repository.datasource.Queries.DELETE_QUERY;
 import static task.clevertec.repository.datasource.Queries.FIRST_INDEX;
 import static task.clevertec.repository.datasource.Queries.GET_ALL_QUERY;
 import static task.clevertec.repository.datasource.Queries.GET_BY_ID_QUERY;
@@ -123,95 +121,22 @@ public class DaoBank extends Dao<Bank> implements IDaoBank {
 
     @Override
     public boolean saveBank(Bank bank) {
-        HashMap<String, Object> values = fillBankValues(bank);
-        List<Object> queryValue = values.values().stream().toList();
+        HashMap<String, Object> fields = fillBankValues(bank);
+        List<Object> values = fields.values().stream().toList();
 
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-
-        try {
-            connection.setAutoCommit(false);
-
-            String query = DataQuery.getInsertQuery(values, DB_BANK);
-            statement = Connector.getStatementInsert(query, connection);
-            Connector.setValues(queryValue, statement);
-            statement.executeUpdate();
-
-            Integer pKey = null;
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet != null && resultSet.next()) {
-                pKey = resultSet.getInt(FIRST_INDEX);
-            }
-
-            connection.commit();
-            return pKey != null;
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //add logger
-            }
-        } finally {
-            Connector.closeStatement(statement);
-            Connector.closeConnection(connection);
-        }
-
-        return false;
+        return save(DB_BANK, fields, values);
     }
 
     @Override
     public boolean updateBank(Bank bank) {
-        HashMap<String, Object> values = fillBankValues(bank);
-        List<Object> queryValue = values.values().stream().toList();
+        HashMap<String, Object> fields = fillBankValues(bank);
+        List<Object> values = fields.values().stream().toList();
 
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-
-        try {
-            connection.setAutoCommit(false);
-
-            String query = DataQuery.getUpdateQuery(values, DB_BANK);
-            statement = Connector.getStatement(query, connection);
-            Connector.setValues(queryValue, statement);
-            Connector.setValue(queryValue.size() + 1, bank.getId(), statement);
-            statement.executeUpdate();
-
-            connection.commit();
-            return true;
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //add logger
-            }
-        } finally {
-            Connector.closeStatement(statement);
-            Connector.closeConnection(connection);
-        }
-
-        return false;
+        return update(DB_BANK, bank.getId(), fields, values);
     }
 
     @Override
     public boolean deleteBankById(Integer id) {
-        String query = String.format(DELETE_QUERY, DB_BANK, BANK_ID);
-        try (
-                Connection connection = getConnection();
-                PreparedStatement statement = connection
-                        .prepareStatement(query)
-        ) {
-            if (statement == null) {
-                return false;
-            }
-
-            Connector.setValue(FIRST_INDEX, id, statement);
-            Connector.execute(statement);
-
-            return true;
-        } catch (SQLException e) {
-            //add logger
-        }
-
-        return false;
+        return deleteById(DB_BANK, BANK_ID, id);
     }
 }
