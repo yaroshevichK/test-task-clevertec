@@ -41,6 +41,8 @@ public class Queries {
     public static final String TRANSACTION_ACC_TRANSFER = "account_transfer";
     public static final String USER_BANK_ID = "user_bank_id";
     public static final String USER_BANK_NAME = "user_bank_name";
+    public static final String INCOME = "income";
+    public static final String EXPENSE = "expense";
 
     //queries
     public static final String GET_CURRENT_DB = "SELECT * FROM " +
@@ -185,4 +187,12 @@ public class Queries {
     public static final String TRANSACTIONS_QUERY = "SELECT * FROM transaction " +
             "WHERE account_id = ? AND date_transaction between ? AND ? " +
             "ORDER BY date_transaction";
+
+    public static final String STMT_QUERY =
+            "SELECT SUM(CASE WHEN transaction.type_transaction = 'INCOME' " +
+                    "THEN transaction.amount END) AS income, " +
+                    "SUM(CASE WHEN transaction.type_transaction <> 'INCOME' " +
+                    "THEN transaction.amount END) as expense " +
+                    "FROM transaction WHERE account_id = ? AND " +
+                    "date_transaction between ? AND ?";
 }

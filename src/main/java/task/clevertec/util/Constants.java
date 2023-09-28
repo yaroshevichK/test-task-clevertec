@@ -48,7 +48,6 @@ public class Constants {
     public static final String STR_STATEMENT = "%d. Выписка из банка";
     public static final String ACTION_MENU = "%d. %s\n";
     public static final String STR_MENU_CANCEL = "0. Отмена";
-    public static final String STR_CANCEL = "Отмена действия";
 
     //msg
     public static final String MSG_WRONG_INIT = "Ошибка инициализации данных";
@@ -68,8 +67,6 @@ public class Constants {
     public static final String MSG_WRONG_ACC = "Указанный счет клиента отсутствует";
     public static final String MSG_WRONG_MONTH = "Не верно введен месяц";
     public static final String MSG_WRONG_YEAR = "Не верно введен год";
-    public static final String MSG_WRONG_RES = "Результат не получен";
-    public static final String MSG_WRONG = "Неизвестная ошибка";
 
     //input message
     public static final String INPUT_NUMBER_MENU = "Введите номер меню:";
@@ -92,6 +89,8 @@ public class Constants {
     public static final String DB_USERS = "users";
 
     //servlets
+    public static final String DATE_FROM = "dateFrom";
+    public static final String DATE_TO = "dateTo";
     public static final String BANKS = "banks";
     public static final String PATTERN_BANK_ID = "(/banks/)(\\d+)";
     public static final String SLASH = "/";
@@ -104,5 +103,7 @@ public class Constants {
 
     public static final String ACCOUNTS = "accounts";
     public static final String PATTERN_ACCOUNT_ID = "(/accounts/)(\\d+)";
+    public static final String STATEMENT = "/statement/*";
+    public static final String PATTERN_STMT = "(/statement/)(\\d+)";
 
 }

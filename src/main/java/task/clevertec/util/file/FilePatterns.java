@@ -39,6 +39,9 @@ public class FilePatterns {
     public static final String HEADER_DATE = "Дата";
     public static final String HEADER_NOTE = "Примечание";
     public static final String HEADER_AMOUNT = "Сумма";
+    public static final String MONEY_STMT = "Money statement";
+    public static final String HEADER_INCOME = "Приход";
+    public static final String HEADER_EXPENSE = "Уход";
 
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     public static final DateTimeFormatter FULL_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -54,6 +57,6 @@ public class FilePatterns {
     public static final String TXT_FILE = ".txt";
     public static final String FILE_STMT_TXT = "statement.txt";
     public static final String FILE_STMT_PDF = "statement.pdf";
-    public static final String FONT = "src/main/resources/fonts/FreeSans.ttf";
+    public static final String FONT = "./src/main/resources/fonts/FreeSans.ttf";
     public static final String CP1251 = "Cp1251";
 }

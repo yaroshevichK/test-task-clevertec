@@ -3,6 +3,8 @@ package task.clevertec.repository;
 import task.clevertec.entity.Account;
 import task.clevertec.entity.User;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 public interface IDaoAccount extends IDao<Account> {
@@ -23,4 +25,6 @@ public interface IDaoAccount extends IDao<Account> {
     boolean updateAccount(Account account);
 
     boolean deleteAccountById(Integer id);
+
+    HashMap<String, Double> generateStatement(Integer id, LocalDateTime dateFrom, LocalDateTime dateTo);
 }

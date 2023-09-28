@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +33,12 @@ import static task.clevertec.repository.datasource.Queries.ACC_DATE_OPEN;
 import static task.clevertec.repository.datasource.Queries.BANK_BANK_ID;
 import static task.clevertec.repository.datasource.Queries.BANK_BANK_NAME;
 import static task.clevertec.repository.datasource.Queries.CURRENCY_NAME;
+import static task.clevertec.repository.datasource.Queries.EXPENSE;
 import static task.clevertec.repository.datasource.Queries.FIRST_INDEX;
 import static task.clevertec.repository.datasource.Queries.GET_ACCOUNT_BY_ID;
 import static task.clevertec.repository.datasource.Queries.GET_ALL_ACCOUNTS;
+import static task.clevertec.repository.datasource.Queries.INCOME;
+import static task.clevertec.repository.datasource.Queries.STMT_QUERY;
 import static task.clevertec.repository.datasource.Queries.USER_ACCOUNT_QUERY;
 import static task.clevertec.repository.datasource.Queries.USER_BANK_ID;
 import static task.clevertec.repository.datasource.Queries.USER_BANK_NAME;
@@ -427,5 +431,36 @@ public class DaoAccount extends Dao<Account> implements IDaoAccount {
     @Override
     public boolean deleteAccountById(Integer id) {
         return deleteById(DB_ACCOUNT, ACCOUNT_ID, id);
+    }
+
+    @Override
+    public HashMap<String, Double> generateStatement(Integer id, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        HashMap<String, Double> amounts = new HashMap<>();
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection
+                        .prepareStatement(STMT_QUERY)
+        ) {
+            if (statement == null) {
+                return null;
+            }
+
+            Connector.setValue(FIRST_INDEX, id, statement);
+            Connector.setValue(FIRST_INDEX + 1, dateFrom, statement);
+            Connector.setValue(FIRST_INDEX + 2, dateTo, statement);
+            ResultSet resultSet = Connector.execute(statement);
+
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    amounts.put(INCOME, resultSet.getDouble(INCOME));
+                    amounts.put(EXPENSE, resultSet.getDouble(EXPENSE));
+                }
+            }
+        } catch (SQLException e) {
+            //add logger
+        }
+
+        return amounts;
     }
 }

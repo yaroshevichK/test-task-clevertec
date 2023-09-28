@@ -15,6 +15,7 @@ import task.clevertec.entity.Account;
 import task.clevertec.entity.Currency;
 import task.clevertec.entity.Transaction;
 import task.clevertec.entity.TypeTransaction;
+import task.clevertec.entity.response.AccountResponse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +30,14 @@ import static task.clevertec.util.Constants.OUT;
 import static task.clevertec.util.file.FilePatterns.*;
 
 public class FileUtils {
+    private static void setPropTable(Table table) {
+        try {
+            table.setFont(PdfFontFactory.createFont(FONT, CP1251, true));
+        } catch (IOException e) {
+            //
+        }
+    }
+
     private static File getFile(String path) {
         File file = new File(path);
         if (!file.exists()) {
@@ -306,8 +315,7 @@ public class FileUtils {
             addToPdf(document, SPACE + getSymbols(LINE, LENGTH_STR_STMT));
 
             addToPdf(document, STATEMENT);
-            addToPdf(document, account.getBank().getName()
-            );
+            addToPdf(document, account.getBank().getName());
 
             addAccountString(tableAcc, USER, account.getUser().getName());
             addAccountString(tableAcc, ACCOUNT, account.getNumber());
@@ -345,11 +353,82 @@ public class FileUtils {
         }
     }
 
-    private static void setPropTable(Table table) {
-        try {
-            table.setFont(PdfFontFactory.createFont(FONT, CP1251, true));
-        } catch (IOException e) {
-            //
+    public static boolean saveStatementMoneyPdf(AccountResponse account, LocalDateTime dateFrom, LocalDateTime dateTo, Double income, Double expense) {
+        File file = getFile(PATH_STMT_MONEY + FILE_STMT_PDF);
+        if (file == null) {
+            //исправть на логирование
+            OUT.println(FILE_NOT_READ);
+            return false;
         }
+
+        float[] colAcc = {1, 1};
+        Table tableAcc = new Table(colAcc);
+        float[] col = {1, 2, 2};
+        Table table = new Table(col);
+        setPropTable(table);
+        setPropTable(tableAcc);
+
+        try {
+            PdfWriter writer = new PdfWriter(String.valueOf(file));
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument);
+
+            String currency = account.getCurrency().getName();
+            String dateOpen = DATE_STMT_FORMAT.format(account.getDateOpen());
+            String dateFromStr = DATE_STMT_FORMAT.format(dateFrom);
+            String dateToStr = DATE_STMT_FORMAT.format(dateTo);
+            String date = DATE_STMT_FORMAT.format(LocalDateTime.now());
+            String time = TIME_FORMAT.format(LocalDateTime.now());
+            String amountStr = BALANCE_FORMAT.format(account.getBalance()) +
+                    SPACE + account.getCurrency().getName();
+            String period = String.format(PERIOD_STR, dateFromStr, dateToStr);
+
+            addToPdf(document, SPACE + getSymbols(LINE, LENGTH_STR_STMT));
+
+            addToPdf(document, MONEY_STMT);
+            addToPdf(document, account.getBank().getName());
+
+            addAccountString(tableAcc, USER, account.getUser().getName());
+            addAccountString(tableAcc, ACCOUNT, account.getNumber());
+            addAccountString(tableAcc, CURRENCY, currency);
+            addAccountString(tableAcc, DATE_OPEN, dateOpen);
+            addAccountString(tableAcc, PERIOD, period);
+            addAccountString(tableAcc, DATE_STMT, date + COMMA + SPACE + time);
+            addAccountString(tableAcc, BALANCE, amountStr);
+
+            document.add(tableAcc);
+
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(EMPTY_STRING)));
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(HEADER_INCOME)));
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(LINE_V + HEADER_EXPENSE)));
+
+            addToPdf(document, getSymbols(LINE, LENGTH_STR_STMT));
+
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(EMPTY_STRING)));
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(BALANCE_FORMAT.format(income))));
+            table.addCell(new Cell()
+                    .setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(LINE_V + BALANCE_FORMAT.format(expense))));
+
+
+            document.add(table);
+
+            document.close();
+        } catch (FileNotFoundException e) {
+            //исправть на логирование
+            OUT.println(FILE_NOT_READ);
+            return false;
+        }
+        return true;
     }
 }

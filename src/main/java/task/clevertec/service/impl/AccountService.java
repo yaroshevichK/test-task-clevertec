@@ -1,5 +1,6 @@
 package task.clevertec.service.impl;
 
+import task.clevertec.controller.App;
 import task.clevertec.entity.Account;
 import task.clevertec.entity.User;
 import task.clevertec.entity.response.AccountResponse;
@@ -8,10 +9,18 @@ import task.clevertec.mapper.impl.AccountMapper;
 import task.clevertec.repository.IDaoAccount;
 import task.clevertec.repository.impl.DaoAccount;
 import task.clevertec.service.IAccountService;
+import task.clevertec.util.file.FileUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import static task.clevertec.repository.datasource.Queries.EXPENSE;
+import static task.clevertec.repository.datasource.Queries.INCOME;
 
 public class AccountService implements IAccountService {
     private final IDaoAccount daoAccount = new DaoAccount();
@@ -69,5 +78,22 @@ public class AccountService implements IAccountService {
     @Override
     public boolean deleteAccountById(Integer id) {
         return daoAccount.deleteAccountById(id);
+    }
+
+    @Override
+    public boolean generateStatement(AccountResponse account, LocalDate dateFrom, LocalDate dateTo) {
+        LocalDateTime dateTimeFrom = Optional
+                .ofNullable(dateFrom)
+                .orElse(Optional
+                        .ofNullable(account.getDateOpen())
+                        .orElse(LocalDate.EPOCH)
+                ).atStartOfDay();
+
+        LocalDateTime dateTimeTo = Optional.ofNullable(dateTo)
+                .orElse(LocalDate.now()).atTime(LocalTime.MAX);
+
+        HashMap<String, Double> amounts = daoAccount.generateStatement(account.getId(), dateTimeFrom, dateTimeTo);
+
+        return FileUtils.saveStatementMoneyPdf(account, dateTimeFrom, dateTimeTo, amounts.get(INCOME), amounts.get(EXPENSE));
     }
 }

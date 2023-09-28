@@ -4,6 +4,7 @@ import task.clevertec.entity.Account;
 import task.clevertec.entity.User;
 import task.clevertec.entity.response.AccountResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IAccountService extends IService<Account> {
@@ -24,4 +25,6 @@ public interface IAccountService extends IService<Account> {
     boolean updateAccount(AccountResponse accountResponse);
 
     boolean deleteAccountById(Integer id);
+
+    boolean generateStatement(AccountResponse account, LocalDate dateFrom, LocalDate dateTo);
 }
